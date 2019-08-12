@@ -14,7 +14,7 @@ int main()
       e o programa imprime uma mesagem de erro e finaliza o programa.
     */
     if (api->Init(NULL, "por")) {
-        fprintf(stderr, "Could not initialize tesseract.\n");
+        printf("Não foi possivel iniciar o tesseract.\n");
         exit(1);
     }
 
