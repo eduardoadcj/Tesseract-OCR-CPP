@@ -1,32 +1,36 @@
 #include <tesseract/baseapi.h>
 #include <leptonica/allheaders.h>
 
-//para instalar
-// sudo apt install libtesseract-dev
-// sudo apt install tesseract-ocr
-
-//para compilar
-// g++ -o myprogram myprogram.cpp -llept -ltesseract
-
 int main()
 {
     char *outText;
 
     tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
-    // Initialize tesseract-ocr with English, without specifying tessdata path
-    if (api->Init(NULL, "eng")) {
+    /*
+      Inicializando a API com a lingua portuguesa
+      O segundo primeiro parametro diz respeito ao caminho da pasta tessdata. Como
+      ela se encontra em um lugar padronizado, não tem a necessidade de especifica-lo, mas caso ele
+      não encontre a pasta ou por algum outro motivo não consiga inicializar, a condição do if é satisfeita
+      e o programa imprime uma mesagem de erro e finaliza o programa.
+    */
+    if (api->Init(NULL, "por")) {
         fprintf(stderr, "Could not initialize tesseract.\n");
         exit(1);
     }
 
-    // Open input image with leptonica library
+    /*
+      O pix é uma struct pertencente a biblioteca leptonica que é uma dependência do
+      tesseract. A utilização dela facilita a manipulação de imagens.
+      As linhas a seguir servem para carregar a imagem.
+    */
     Pix *image = pixRead("image.png");
     api->SetImage(image);
-    // Get OCR result
-    outText = api->GetUTF8Text();
-    printf("OCR output:\n%s", outText);
 
-    // Destroy used object and release memory
+    // Obtendo o resultado a partir da imagem definida
+    outText = api->GetUTF8Text();
+    printf("%s",outText);
+
+    // Destruindo objeto utilizado e liberando memória
     api->End();
     delete [] outText;
     pixDestroy(&image);
