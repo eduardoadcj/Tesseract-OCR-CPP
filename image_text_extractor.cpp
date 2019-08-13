@@ -3,10 +3,7 @@
 #include <leptonica/allheaders.h>
 #include <thread>
 #include <fstream>
-
-#DEFINE LINE_SIZE 100
-
-using namespace std;
+#include <string>
 
 FILE *file;
 
@@ -42,19 +39,19 @@ int open_file(char *path)
   return 1;
 }
 
-int write_file(char *text)
+void write_file(char *text)
 {
-
-  char line[LINE_SIZE];
-  //pegar o tamanho da entrada e dividir no vetor de linhas.
-  //mandar escrever ate terminar as linhas do arquivo.
-
+  char line[strlen(text)];
+  strcpy(line, text);
+  fputs(line, file);
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 
-  if(argc != 4){
+  if(argc != 3){
     printf("Modo de usar: %s <imagem de entrada> <arquivo de saida>\n", argv[0]);
+    return 0;
   }
 
   char *input_img_path, *output_file_path, *outText;
@@ -86,21 +83,23 @@ int main(int argc, char **argv) {
   int page = 0;
   std::thread t1(ocrProcess, api, monitor);
   std::thread t2(monitorProgress, monitor, page);
-  t1.join();
   t2.join();
+  t1.join();
 
   pixDestroy(&image);
-  *outText = api->GetUTF8Text();
+  outText = api->GetUTF8Text();
 
-  //mandar escrever o arquivo agora
+  printf("\nEscrevendo arquivo...\n");
+
+  write_file(outText);
 
   if (outText)
     delete [] outText;
 
   api->End();
-
   fclose(file);
 
+  printf("Processo concluído!\n");
   return 0;
 
 }
