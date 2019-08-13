@@ -105,4 +105,4 @@ int main(int argc, char **argv)
 }
 
 // to compile
-// g++ -o ex reader_monitor.cpp -llept -ltesseract -lpthread
+// g++ -o ex image_text_extractor.cpp -llept -ltesseract -lpthread
